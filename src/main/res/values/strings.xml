@@ -25,5 +25,5 @@
   -->
 
 <resources>
-  <string name="app_name">AndroidLogcatStdoutsJni</string>
+  <string name="app_name">AndroidLogcatStdouts</string>
 </resources>
