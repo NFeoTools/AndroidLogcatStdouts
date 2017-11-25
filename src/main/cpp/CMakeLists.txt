@@ -37,6 +37,6 @@ set(lib_SOURCES
 )
 
 add_library(${lib_NAME} SHARED ${lib_SOURCES} ${lib_HEADERS})
-target_link_libraries(${lib_NAME} android log)
+target_link_libraries(${lib_NAME} PRIVATE android log)
 set_property(TARGET ${lib_NAME} PROPERTY CXX_STANDARD 11)
 set_property(TARGET ${lib_NAME} PROPERTY C_STANDARD 11)
