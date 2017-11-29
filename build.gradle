@@ -137,7 +137,9 @@ android {
   externalNativeBuild {
     cmake {
       path "${projectDir}/src/main/cpp/CMakeLists.txt"
-      buildStagingDirectory "${rootDir}/build_android/build_native/${rootProject.name}/${project.name}"
+      // https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.CmakeOptions.html
+      buildStagingDirectory =
+          "${rootDir}/build_android/build_native/${rootProject.name}/${project.name}"
     }
   }
 
