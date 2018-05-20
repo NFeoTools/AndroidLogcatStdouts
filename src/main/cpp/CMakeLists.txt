@@ -26,14 +26,15 @@ cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 project(AndroidLogcatStdouts CXX)
 set(lib_NAME "logcatstdouts")
+set(src_DIR "${PROJECT_SOURCE_DIR}/src")
 
 set(lib_HEADERS
-  AndroidLogcatStdouts.h
+  ${src_DIR}/AndroidLogcatStdouts.h
 )
 
 set(lib_SOURCES
-  AndroidLogcatStdouts.cpp
-  AndroidLogcatStdoutsJni.cpp
+  ${src_DIR}/AndroidLogcatStdouts.cpp
+  ${src_DIR}/AndroidLogcatStdoutsJni.cpp
 )
 
 add_library(${lib_NAME} SHARED ${lib_SOURCES} ${lib_HEADERS})
