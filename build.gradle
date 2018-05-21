@@ -74,6 +74,11 @@ if (rootProject.hasProperty("rootNativeBuildDir")) {
   rootNativeBuildDir = rootProject.rootNativeBuildDir
 }
 
+def BUILD_SHARED_LIBS = false
+if (rootProject.hasProperty("BUILD_SHARED_LIBS")) {
+  BUILD_SHARED_LIBS = rootProject.BUILD_SHARED_LIBS
+}
+
 //-----------------------------------------------------------------------
 // Module properties
 //-----------------------------------------------------------------------
@@ -90,12 +95,6 @@ android.variantFilter { variant ->
 //-----------------------------------------------------------------------
 // Android Java part
 //-----------------------------------------------------------------------
-
-def String BUILD_SHARED_LIBS = "false"
-if (rootProject.hasProperty("buildGradleDebug") &&
-    rootProject.buildGradleDebug) {
-  BUILD_SHARED_LIBS = "true"
-}
 
 android {
   compileSdkVersion compileSdkVer
@@ -173,7 +172,7 @@ android {
         abiFilters = abiFilts // what ABIs gradle should build
 
         def String androidStl = "c++_static"
-        if (BUILD_SHARED_LIBS == "true") {
+        if (BUILD_SHARED_LIBS) {
           androidStl = "c++_shared"
         }
 
@@ -232,7 +231,7 @@ android {
   // To combine with others native modules which have the c++_shared
   // to prevent the error:
   // "More than one file was found with OS independent path 'lib/<abi>/libc++_shared.so'"
-  if (rootProject.hasProperty("excludeSharedStl") &&
+  if (BUILD_SHARED_LIBS && rootProject.hasProperty("excludeSharedStl") &&
       rootProject.excludeSharedStl) {
     abiFilts.each { abiFilt ->
       packagingOptions {
