@@ -30,9 +30,18 @@ public class AndroidLogcatStdoutsJni
 
   static {
     try {
+      // Needed for shared linking on Android < 4.3 (API < 18).
+      // See also:
+      // https://github.com/KeepSafe/ReLinker
+      // https://github.com/ikonst/android-dl
+      if (BuildConfig.BUILD_SHARED_LIBS) {
+        System.loadLibrary("c++_shared");
+      }
+
       System.loadLibrary("logcatstdouts");
+
     } catch (UnsatisfiedLinkError e) {
-      System.err.println("Native code library failed to load. \n" + e);
+      System.err.println("Native code library failed to load.\n" + e);
       System.exit(1);
     }
   }

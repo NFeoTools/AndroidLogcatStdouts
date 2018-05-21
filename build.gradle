@@ -91,6 +91,12 @@ android.variantFilter { variant ->
 // Android Java part
 //-----------------------------------------------------------------------
 
+def String BUILD_SHARED_LIBS = "false"
+if (rootProject.hasProperty("buildGradleDebug") &&
+    rootProject.buildGradleDebug) {
+  BUILD_SHARED_LIBS = "true"
+}
+
 android {
   compileSdkVersion compileSdkVer
   buildToolsVersion buildToolsVer
@@ -110,10 +116,14 @@ android {
       jniDebuggable false
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      buildConfigField("Boolean", "BUILD_SHARED_LIBS", "${BUILD_SHARED_LIBS}")
     }
     debug {
       debuggable true
       jniDebuggable true
+
+      buildConfigField("Boolean", "BUILD_SHARED_LIBS", "${BUILD_SHARED_LIBS}")
     }
   }
 }
@@ -151,6 +161,8 @@ android {
 //def String abiFiltersString = cmAndroidAbis.toString()
 //abiFiltersString = abiFiltersString.substring(1, abiFiltersString.length() - 1)
 
+  def projectNativeBuildDir = "${rootNativeBuildDir}/${project.name}"
+
   defaultConfig {
     ndk {
       abiFilters = abiFilts // what ABIs gradle should package into one apk
@@ -160,9 +172,18 @@ android {
       cmake {
         abiFilters = abiFilts // what ABIs gradle should build
 
+        def String androidStl = "c++_static"
+        if (BUILD_SHARED_LIBS == "true") {
+          androidStl = "c++_shared"
+        }
+
 //        targets "cmaketarget1", "cmaketarget2", "cmaketarget3" // TODO:
 
+        // STUB_NOT_USED_CMAKE_VAR is a stub to simply turn off
+        // the underlying variables with commenting.
         arguments "-DSTUB_NOT_USED_CMAKE_VAR=OFF",
+
+            "-DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}",
 
 //            "-DCMAKE_VERBOSE_MAKEFILE=TRUE",
 
@@ -182,7 +203,6 @@ android {
 //            "-DCMAKE_TOOLCHAIN_FILE=${projectDir}/...../android.toolchain.cmake",
 //            "-GAndroid Gradle - Unix Makefiles",
 //            "-DCMAKE_MAKE_PROGRAM=make",
-//            "-DBUILD_SHARED_LIBS=ON",
 
 //            "-DCXX_STANDARD=14",
 //            "-DCXX_STANDARD_REQUIRED=ON",
@@ -195,15 +215,29 @@ android {
 
             // clang
             "-DANDROID_TOOLCHAIN=clang",
-            "-DANDROID_STL=c++_static"
+            "-DANDROID_STL=${androidStl}",
+
+            "-DSTUB_NOT_USED_CMAKE_VAR=OFF"
       }
     }
   }
   externalNativeBuild {
     cmake {
-      path "${projectDir}/src/main/cpp/CMakeLists.txt"
+      path = "${projectDir}/src/main/cpp/CMakeLists.txt"
       // https://google.github.io/android-gradle-dsl/current/com.android.build.gradle.internal.dsl.CmakeOptions.html
-      buildStagingDirectory = "${rootNativeBuildDir}/${project.name}"
+      buildStagingDirectory = "${projectNativeBuildDir}"
+    }
+  }
+
+  // To combine with others native modules which have the c++_shared
+  // to prevent the error:
+  // "More than one file was found with OS independent path 'lib/<abi>/libc++_shared.so'"
+  if (rootProject.hasProperty("excludeSharedStl") &&
+      rootProject.excludeSharedStl) {
+    abiFilts.each { abiFilt ->
+      packagingOptions {
+        exclude "lib/${abiFilt}/libc++_shared.so"
+      }
     }
   }
 
