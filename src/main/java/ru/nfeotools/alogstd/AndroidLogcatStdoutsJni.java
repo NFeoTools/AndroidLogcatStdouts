@@ -24,7 +24,7 @@
 
 package ru.nfeotools.alogstd;
 
-import ru.feographia.alogstd.BuildConfig;
+import ru.nfeotools.alogstd.BuildConfig;
 
 
 public class AndroidLogcatStdoutsJni
