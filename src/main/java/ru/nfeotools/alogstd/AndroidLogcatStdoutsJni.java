@@ -24,12 +24,9 @@
 
 package ru.nfeotools.alogstd;
 
-import ru.nfeotools.alogstd.BuildConfig;
-
-
 public class AndroidLogcatStdoutsJni
 {
-  public native static boolean init();
+  public native static boolean init(String appName, String logPrefix);
 
   static {
     try {

@@ -49,6 +49,6 @@ public class ExampleInstrumentedTest
     // Context of the app under test.
     Context appContext = InstrumentationRegistry.getTargetContext();
 
-    assertEquals("ru.feographia.stdoutstologcatredirector.test", appContext.getPackageName());
+    assertEquals("ru.nfeotools.alogstd.test", appContext.getPackageName());
   }
 }

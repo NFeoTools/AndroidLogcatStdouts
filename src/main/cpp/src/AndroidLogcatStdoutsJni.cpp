@@ -36,9 +36,16 @@ extern "C" {
 
 JNIEXPORT jboolean JNICALL
 Java_ru_nfeotools_alogstd_AndroidLogcatStdoutsJni_init(
-    JNIEnv* env, jclass type)
+    JNIEnv* env, jclass type, jstring appName_, jstring logPrefix_)
 {
-  return static_cast<jboolean>(alogstd::AndroidLogcatStdouts::init());
+  const char* appName = env->GetStringUTFChars(appName_, 0);
+  const char* logPrefix = env->GetStringUTFChars(logPrefix_, 0);
+
+  return static_cast<jboolean>(
+      alogstd::AndroidLogcatStdouts::init(appName, logPrefix));
+
+  env->ReleaseStringUTFChars(appName_, appName);
+  env->ReleaseStringUTFChars(logPrefix_, logPrefix);
 }
 
 #ifdef __cplusplus

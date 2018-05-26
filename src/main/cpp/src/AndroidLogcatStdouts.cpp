@@ -30,7 +30,7 @@
 #include <android/log.h>
 
 #define LOG(fmt, ...) \
-  __android_log_print(ANDROID_LOG_DEBUG, "Feographia", fmt, ##__VA_ARGS__)
+  __android_log_print(ANDROID_LOG_DEBUG, "ALogStd", fmt, ##__VA_ARGS__)
 
 namespace alogstd
 {
@@ -38,9 +38,10 @@ namespace alogstd
 // https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
 // http://stackoverflow.com/a/31777050
 
-static int logcatPfd[2];
-static pthread_t stdoutsThread;
-static const char* pLogcatTag;
+static int gLogcatPfd[2];
+static pthread_t gStdoutsThread;
+static std::string gLogcatTag;
+static std::string gLogPrefix;
 
 /**
  * @author John Tsiombikas
@@ -52,21 +53,15 @@ static void* stdoutsThreadFunc(void*)
   char buf[256];
 
   // Workaround for android logcat formatting.
-  buf[0] = '-';
-  buf[1] = 'F';
-  buf[2] = 'g';
-  buf[3] = 'r';
-  buf[4] = '-';
-  buf[5] = ' ';
+  unsigned int logPrefixSize = gLogPrefix.size();
+  gLogPrefix.copy(buf, logPrefixSize, 0);
 
-  int logPrefixSize = 6;
-
-  while ((rdsz = read(logcatPfd[0], buf + logPrefixSize,
-              sizeof buf - 1 - logPrefixSize))
+  while((rdsz = read(gLogcatPfd[0], buf + logPrefixSize,
+             sizeof buf - 1 - logPrefixSize))
       > 0) {
     // if(buf[rdsz + 7 - 1 ] == '\n') --rdsz;
-    buf[rdsz + logPrefixSize] = 0; /* add null-terminator */
-    __android_log_write(ANDROID_LOG_DEBUG, pLogcatTag, buf);
+    buf[rdsz + logPrefixSize] = 0;  // add null-terminator
+    __android_log_write(ANDROID_LOG_DEBUG, gLogcatTag.c_str(), buf);
   }
   return (0);
 }
@@ -75,37 +70,48 @@ static void* stdoutsThreadFunc(void*)
  * @author John Tsiombikas
  * @link https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
  */
-int redirectStdoutsToLogcat(const char* pAppName)
+int redirectStdoutsToLogcat(
+    const std::string& appName, const std::string& logPrefix)
 {
-  pLogcatTag = pAppName;
+  gLogcatTag = appName;
+  gLogPrefix = logPrefix;
 
   // Make stdout line-buffered and stderr unbuffered.
   setvbuf(stdout, 0, _IOLBF, 0);
   setvbuf(stderr, 0, _IONBF, 0);
 
   // Create the pipe and redirect stdout and stderr.
-  pipe(logcatPfd);
-  dup2(logcatPfd[1], 1);
-  dup2(logcatPfd[1], 2);
+  pipe(gLogcatPfd);
+  dup2(gLogcatPfd[1], 1);
+  dup2(gLogcatPfd[1], 2);
 
   // Spawn the logging thread.
-  if (pthread_create(&stdoutsThread, 0, stdoutsThreadFunc, 0) == -1) {
+  if(pthread_create(&gStdoutsThread, 0, stdoutsThreadFunc, 0) == -1) {
     return (-1);
   }
 
-  pthread_detach(stdoutsThread);
+  pthread_detach(gStdoutsThread);
   return (0);
 }
 
-bool AndroidLogcatStdouts::init()
+bool AndroidLogcatStdouts::init(
+    const std::string& appName, const std::string& logPrefix)
 {
-  LOG("-Fgr- AndroidLogcatStdouts init %s", "starting");
-  if (redirectStdoutsToLogcat("Feographia")) {
-    LOG("-Fgr- AndroidLogcatStdouts init %s", "FAILED");
+  std::string prefStr(logPrefix);
+  prefStr.resize(5, '-');
+  prefStr += ' ';
+
+  std::string initMsgStr = prefStr + "AndroidLogcatStdouts init %s";
+  const char* initMsg = initMsgStr.c_str();
+
+  LOG(initMsg, "starting");
+  if(redirectStdoutsToLogcat(appName, prefStr)) {
+    LOG(initMsg, "FAILED");
     return false;
   }
-  LOG("-Fgr- AndroidLogcatStdouts init %s", "finished");
+  LOG(initMsg, "finished");
   std::cout << "AndroidLogcatStdouts is ready" << std::endl;
   return true;
 }
+
 }  // namespace alogstd

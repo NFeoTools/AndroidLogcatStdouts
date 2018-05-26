@@ -25,12 +25,14 @@
 #ifndef ANDROIDLOGCATSTDOUTS_H
 #define ANDROIDLOGCATSTDOUTS_H
 
+#include <string>
+
 namespace alogstd
 {
 class AndroidLogcatStdouts
 {
 public:
-  static bool init();
+  static bool init(const std::string& appName, const std::string& logPrefix);
 };
 }
 
