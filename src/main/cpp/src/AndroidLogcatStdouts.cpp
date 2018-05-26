@@ -32,7 +32,7 @@
 #define LOG(fmt, ...) \
   __android_log_print(ANDROID_LOG_DEBUG, "Feographia", fmt, ##__VA_ARGS__)
 
-namespace fgr
+namespace alogstd
 {
 // Redirect the "stdout" and "stderr" to android logcat.
 // https://codelab.wordpress.com/2014/11/03/how-to-use-standard-output-streams-for-logging-in-android-apps/
@@ -108,4 +108,4 @@ bool AndroidLogcatStdouts::init()
   std::cout << "AndroidLogcatStdouts is ready" << std::endl;
   return true;
 }
-}  // namespace fgr
+}  // namespace alogstd

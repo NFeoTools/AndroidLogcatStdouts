@@ -25,7 +25,7 @@
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 project(AndroidLogcatStdouts CXX)
-set(lib_NAME "logcatstdouts")
+set(lib_NAME "alogstd")
 set(src_DIR "${PROJECT_SOURCE_DIR}/src")
 
 set(lib_HEADERS

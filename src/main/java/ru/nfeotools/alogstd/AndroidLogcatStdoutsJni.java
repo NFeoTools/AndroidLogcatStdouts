@@ -22,7 +22,10 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-package ru.feographia.androidlogcatstdouts;
+package ru.nfeotools.alogstd;
+
+import ru.feographia.alogstd.BuildConfig;
+
 
 public class AndroidLogcatStdoutsJni
 {
@@ -38,7 +41,7 @@ public class AndroidLogcatStdoutsJni
         System.loadLibrary("c++_shared");
       }
 
-      System.loadLibrary("logcatstdouts");
+      System.loadLibrary("alogstd");
 
     } catch (UnsatisfiedLinkError e) {
       System.err.println("Native code library failed to load.\n" + e);

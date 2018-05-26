@@ -25,7 +25,7 @@
 #ifndef ANDROIDLOGCATSTDOUTS_H
 #define ANDROIDLOGCATSTDOUTS_H
 
-namespace fgr
+namespace alogstd
 {
 class AndroidLogcatStdouts
 {

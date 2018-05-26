@@ -25,6 +25,6 @@
   -->
 
 <manifest
-    package="ru.feographia.androidlogcatstdouts"
+    package="ru.nfeotools.alogstd"
     xmlns:android="http://schemas.android.com/apk/res/android"
     />

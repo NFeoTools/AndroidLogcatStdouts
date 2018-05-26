@@ -35,10 +35,10 @@ extern "C" {
 #endif
 
 JNIEXPORT jboolean JNICALL
-Java_ru_feographia_androidlogcatstdouts_AndroidLogcatStdoutsJni_init(
+Java_ru_nfeotools_alogstd_AndroidLogcatStdoutsJni_init(
     JNIEnv* env, jclass type)
 {
-  return fgr::AndroidLogcatStdouts::init();
+  return static_cast<jboolean>(alogstd::AndroidLogcatStdouts::init());
 }
 
 #ifdef __cplusplus
