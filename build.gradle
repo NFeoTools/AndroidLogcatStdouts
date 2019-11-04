@@ -22,7 +22,7 @@
  *    along with this program. If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 //-----------------------------------------------------------------------
 // Common vars from root project
@@ -58,8 +58,7 @@ if (rootProject.hasProperty("supportLibVersion")) {
   supportLibVer = rootProject.supportLibVersion
 }
 
-//def abiFilts = ["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]
-def abiFilts = ["x86"]
+def abiFilts = ["armeabi-v7a", "arm64-v8a", "x86", "x86_64"]
 if (rootProject.hasProperty("abiFilters")) {
   abiFilts = rootProject.abiFilters
 }
@@ -106,7 +105,7 @@ android {
     versionCode 1
     versionName "1.0"
 
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
@@ -114,7 +113,7 @@ android {
       debuggable false
       jniDebuggable false
       minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
 
       buildConfigField("Boolean", "BUILD_SHARED_LIBS", "${BUILD_SHARED_LIBS}")
     }
@@ -128,11 +127,11 @@ android {
 }
 
 dependencies {
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
+  implementation fileTree(dir: "libs", include: ["*.jar"])
 
-  testImplementation 'junit:junit:4.12'
-  androidTestImplementation 'com.android.support.test:runner:1.0.2'
-  androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+  testImplementation "junit:junit:4.12"
+  androidTestImplementation "androidx.test.ext:junit:1.1.1"
+  androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
 }
 
 //-----------------------------------------------------------------------
